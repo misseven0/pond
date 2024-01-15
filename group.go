@@ -68,7 +68,6 @@ func (g *TaskGroupWithContext) Submit(task func() error) {
 // one of them returned a non-nil error or the context associated to this group
 // was canceled.
 func (g *TaskGroupWithContext) Wait() error {
-
 	// Wait for all tasks to complete
 	tasksCompleted := make(chan struct{})
 	go func() {

@@ -33,23 +33,18 @@ type ratedResizer struct {
 // rate: determines the number of tasks to receive before creating an extra worker.
 // A value of 3 can be interpreted as: "Create a new worker every 3 tasks".
 func RatedResizer(rate int) ResizingStrategy {
-
 	if rate < 1 {
 		rate = 1
 	}
-
 	return &ratedResizer{
 		rate: uint64(rate),
 	}
 }
 
 func (r *ratedResizer) Resize(runningWorkers, minWorkers, maxWorkers int) bool {
-
 	if r.rate == 1 || runningWorkers == 0 {
 		return true
 	}
-
 	r.hits++
-
 	return r.hits%r.rate == 1
 }

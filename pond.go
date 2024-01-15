@@ -102,7 +102,6 @@ type WorkerPool struct {
 // because it defines the size of the buffered channel used to receive tasks.
 // The options parameter can take a list of functions to customize configuration values on this worker pool.
 func New(maxWorkers, maxCapacity int, options ...Option) *WorkerPool {
-
 	// Instantiate the pool
 	pool := &WorkerPool{
 		maxWorkers:   maxWorkers,
@@ -300,7 +299,6 @@ func (p *WorkerPool) SubmitBefore(task func(), deadline time.Duration) {
 	if task == nil {
 		return
 	}
-
 	timer := time.NewTimer(deadline)
 	p.Submit(func() {
 		select {
@@ -309,7 +307,6 @@ func (p *WorkerPool) SubmitBefore(task func(), deadline time.Duration) {
 		default:
 			// Deadline not reached, execute the task
 			defer timer.Stop()
-
 			task()
 		}
 	})
@@ -331,7 +328,6 @@ func (p *WorkerPool) StopAndWait() {
 // StopAndWaitFor stops this pool and waits until either all tasks in the queue are completed
 // or the given deadline is reached, whichever comes first.
 func (p *WorkerPool) StopAndWaitFor(deadline time.Duration) {
-
 	// Launch goroutine to detect when worker pool has stopped gracefully
 	workersDone := make(chan struct{})
 	go func() {
@@ -394,14 +390,11 @@ func (p *WorkerPool) purge() {
 
 // maybeStopIdleWorker attempts to stop an idle worker by sending it a nil task
 func (p *WorkerPool) maybeStopIdleWorker() bool {
-
 	if decremented := p.decrementWorkerCount(); !decremented {
 		return false
 	}
-
 	// Send a nil task to stop an idle worker
 	p.tasks <- nil
-
 	return true
 }
 
@@ -409,25 +402,20 @@ func (p *WorkerPool) maybeStopIdleWorker() bool {
 // If the worker pool has reached the maximum number of workers or there are idle workers,
 // it will not create a new one.
 func (p *WorkerPool) maybeStartWorker(firstTask func()) bool {
-
 	if incremented := p.incrementWorkerCount(); !incremented {
 		return false
 	}
-
 	if firstTask == nil {
 		// Worker starts idle
 		atomic.AddInt32(&p.idleWorkerCount, 1)
 	}
-
 	// Launch worker goroutine
 	go worker(p.context, &p.workersWaitGroup, firstTask, p.tasks, p.executeTask)
-
 	return true
 }
 
 // executeTask executes the given task and updates task-related counters
 func (p *WorkerPool) executeTask(task func(), isFirstTask bool) {
-
 	defer func() {
 		if panic := recover(); panic != nil {
 			// Increment failed task count

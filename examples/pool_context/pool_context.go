@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/alitto/pond"
+	"github.com/misseven0/pond"
 )
 
 // Pressing Ctrl+C while this program is running will cause the program to terminate gracefully.

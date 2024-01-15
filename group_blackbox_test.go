@@ -7,11 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alitto/pond"
+	"github.com/misseven0/pond"
 )
 
 func TestGroupSubmit(t *testing.T) {
-
 	pool := pond.New(5, 1000)
 	assertEqual(t, 0, pool.RunningWorkers())
 
